@@ -128,6 +128,7 @@
                 ELSE '未知'
             END gender,
             d.NAME AS dept_name,
+            u.email,
             u.create_time
         FROM
             sys_user u
@@ -151,6 +152,7 @@
         u.mobile,
         u.gender,
         d.NAME,
+        u.email,
         u.create_time
     </select>
 

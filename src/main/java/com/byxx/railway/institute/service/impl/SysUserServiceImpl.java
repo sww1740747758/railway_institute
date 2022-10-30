@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -260,16 +261,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         StringBuilder errMsg = new StringBuilder();
         for (int i = 0; i < validDataList.size(); i++) {
             UserImportDTO.UserItem userItem = validDataList.get(i);
-
             String username = userItem.getUsername();
             if (StrUtil.isBlank(username)) {
-                errMsg.append(StrUtil.format("第{}条数据导入失败，原因：用户名为空", i + 1));
+                errMsg.append(StrUtil.format("第{}条数据导入失败，原因：用户名为空<br/>", i + 1));
+                continue;
+            }
+            UserAuthInfo userAuthInfo = this.baseMapper.getUserAuthInfo(username);
+            if(userAuthInfo !=null){
+                errMsg.append(StrUtil.format("第{}条数据导入失败，原因：用户名《{}》已存在<br/>", i + 1,username));
                 continue;
             }
 
             String nickname = userItem.getNickname();
             if (StrUtil.isBlank(nickname)) {
-                errMsg.append(StrUtil.format("第{}条数据导入失败，原因：用户昵称为空", i + 1));
+                errMsg.append(StrUtil.format("第{}条数据导入失败，原因：用户昵称为空<br/>", i + 1));
                 continue;
             }
 
